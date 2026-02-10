@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const walletSchema = new mongoose.Schema(
   {
     clientId: {
@@ -13,3 +15,5 @@ const walletSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+export default mongoose.model("Wallet", walletSchema);

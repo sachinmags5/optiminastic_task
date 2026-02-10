@@ -34,8 +34,37 @@ export const creditWallet = async (req, res, next) => {
     });
   }
 
-  // rest of logic unchanged
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const wallet = await WalletService.credit(client_id, amount, session);
+    await session.commitTransaction();
+    res.json(wallet);
+  } catch (err) {
+    await session.abortTransaction();
+    next(err);
+  } finally {
+    session.endSession();
+  }
 };
+
+// export const debitWallet = async (req, res, next) => {
+//   const { client_id, amount } = req.body;
+//   const session = await mongoose.startSession();
+//   session.startTransaction();
+
+//   try {
+//     const wallet = await WalletService.debit(client_id, amount, session);
+//     await session.commitTransaction();
+//     res.json(wallet);
+//   } catch (err) {
+//     await session.abortTransaction();
+//     next(err);
+//   } finally {
+//     session.endSession();
+//   }
+// };
 
 export const debitWallet = async (req, res, next) => {
   const { client_id, amount } = req.body;
